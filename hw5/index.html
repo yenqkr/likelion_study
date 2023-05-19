@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ko" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Password Strength Checker JavaScript</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>Password Strength Indicator</header>
+      <form action="#">
+        <div class="field">
+          <!--키를 누르고 뗄 때 이벤트를 감지하는 Password input 생성하기 / js function trigger 사용-->
+          <input
+            class="input"
+            onInput="trigger()"
+            type="password"
+            placeholder="enter a password"
+          />
+          <span class="showBtn">SHOW</span>
+        </div>
+        <div class="text"></div>
+        <div class="indicator">
+          <span class="weak"></span>
+          <span class="medium"></span>
+          <span class="strong"></span>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      const indicator = document.querySelector(".indicator");
+      const input = document.querySelector(".field input"); //input 가져오기
+      const weak = document.querySelector(".weak");
+      const medium = document.querySelector(".medium");
+      const strong = document.querySelector(".strong");
+      // indicator > span 요소들 가져오기
+
+      const text = document.querySelector(".text"); //text class 가져오기
+      const showBtn = document.querySelector(".showBtn"); // showBtn 클래스 가져오기
+
+      let regExpWeak = weak; //변수 1 설정
+      let regExpMedium = medium; //변수 2 설정
+      let regExpStrong = strong; //변수 3 설정
+
+      const re1 = /^(?=.*[a-z])/;
+      const re2 = /^(?=.*[A-Z])/;
+      const re3 = /^(?=.*[()!@#$%^&*?_~-])/;
+      // const re21 =/^(?=.*[A-Z])(?=.*[()!@#$%^&*?_~-])/
+      // const re22=/^(?=.*[a-z])(?=.*[()!@#$%^&*?_~-])/
+      // const re23=  /^(?=.*[A-Za-z])/;
+      // const re3 = /^(?=.*[A-Za-z])(?=.*[()!@#$%^&*?_~-])/;
+
+      function trigger() {
+        if (input.value != "") {
+          indicator.style.display = "block";
+          indicator.style.display = "flex";
+
+          /* weak,medium,strong 조건 추가하기
+          if()no=1;
+          if()no=2;
+          if()no=3;
+           */
+
+          if (
+            input.value.length <= 3 &&
+            input.value.length >= 0 &&
+            (input.value.match(re1) ||
+              input.value.match(re2) ||
+              input.value.match(re3))
+          ) {
+            weak.classList.add("active");
+            text.classList.add("weak");
+            text.style.display = "block";
+            //  안내문구 출력
+            text.innerText = "Your password is too weak";
+            //  박스 출력
+            weak.style.display = "block";
+            weak.style.display = "flex";
+          }
+
+          if (
+            input.value.length >= 4 &&
+            input.value.length <= 5 &&
+            ((input.value.match(re1) && input.value.match(re2)) ||
+              (input.value.match(re2) && input.value.match(re3)) ||
+              (input.value.match(re1) && input.value.match(re3)))
+          ) {
+            //medium 조건 충족할 시
+            medium.classList.add("active");
+            weak.classList.add("active");
+            text.classList.add("medium");
+            text.style.display = "block";
+            text.innerText = "Your password is medium";
+            medium.style.display = "block";
+            medium.style.display = "flex";
+          } else {
+            /*
+            .add된 이벤트 지워주기
+            */
+            if (input.value.length <= 3) {
+              medium.classList.remove("active");
+              text.classList.remove("medium");
+            }
+          }
+
+          if (
+            input.value.length >= 6 &&
+            input.value.match(re1) &&
+            input.value.match(re2) &&
+            input.value.match(re3)
+          ) {
+            //strong 조건 충족할 시
+            strong.classList.add("active");
+            text.classList.add("strong");
+            text.style.display = "block";
+            text.innerText = "Your password is strong";
+            strong.style.display = "block";
+            strong.style.display = "flex";
+          } else {
+            /*
+            .add된 이벤트 지워주기
+            */
+            text.classList.remove("strong");
+            strong.classList.remove("active");
+          }
+
+          showBtn.style.display = "block";
+          showBtn.onclick = function () {
+            if (input.type === "password") {
+              //password type text로 설정
+              input.type = "text";
+              //showBtn => HIDE로 설정
+              showBtn.innerText = "HIDE";
+              // 색상 설정
+              showBtn.style.color = "blue";
+            } else {
+              //password type password로 설정
+              input.type = "password";
+              //showBtn => SHOW로 설정
+              showBtn.innerText = "SHOW";
+              // 색상 설정
+              showBtn.style.color = "black";
+            }
+          };
+        } else {
+          indicator.style.display = "none";
+          text.style.display = "none";
+          showBtn.style.display = "none";
+        }
+      }
+    </script>
+  </body>
+</html>
